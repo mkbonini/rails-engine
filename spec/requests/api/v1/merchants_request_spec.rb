@@ -38,6 +38,6 @@ RSpec.describe 'The merchants API' do
     expect(merchant).to have_key(:attributes)
     expect(merchant[:attributes][:name]).to eq(merchants.first.name)
 
-    expect(merchant[:attributes][:name]).to_not eq(:merchants.last.name)
+    expect(merchant[:attributes][:name]).to_not eq(merchants.last.name)
   end
 end

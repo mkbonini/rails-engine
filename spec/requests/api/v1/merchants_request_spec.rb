@@ -40,4 +40,11 @@ RSpec.describe 'The merchants API' do
 
     expect(merchant[:attributes][:name]).to_not eq(merchants.last.name)
   end
+
+  it 'sends all items for a given merchant id' do
+    merchants = create_list(:merchant, 2)
+    items = create_list(:item, 3)
+
+    get "/api/v1/merchants/#{merchants.first.id}/items"
+  end
 end

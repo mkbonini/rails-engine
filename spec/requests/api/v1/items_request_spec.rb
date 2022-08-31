@@ -4,8 +4,6 @@ RSpec.describe 'The items API' do
   let!(:items) { create_list(:item, 10) }
   let(:item_id) { items.first.id }
   it 'sends a list of items' do
-    # create_list(:item, 3)
-
     get '/api/v1/items'
 
     response_body = JSON.parse(response.body, symbolize_names: true)
@@ -30,8 +28,6 @@ RSpec.describe 'The items API' do
   end
 
   it 'sends a single item by id' do
-    # items = create_list(:item, 2)
-
     get "/api/v1/items/#{item_id}"
 
     response_body = JSON.parse(response.body, symbolize_names: true)
@@ -98,8 +94,8 @@ RSpec.describe 'The items API' do
   describe 'Get /items/:id/merchant' do
     before { get "/api/v1/items/#{item_id}/merchant"}
 
-    it 'returns the items merchants' do
-      expect(json).to eq("something")
+    it 'returns the items merchant' do
+      expect(json[:data][:attributes][:name]).to eq(items.first.merchant.name)
     end
   end
 

@@ -15,7 +15,7 @@ RSpec.describe 'The merchants API' do
 
     merchants.each do |merchant|
       expect(merchant).to have_key(:id)
-      # expect(merchant[:id]).to be_an(Integer)
+      expect(merchant[:id]).to be_an(String)
 
       expect(merchant).to have_key(:attributes)
       expect(merchant[:attributes][:name]).to be_a(String)
@@ -46,5 +46,19 @@ RSpec.describe 'The merchants API' do
     items = create_list(:item, 3)
 
     get "/api/v1/merchants/#{merchants.first.id}/items"
+
+    response_body = JSON.parse(response.body, symbolize_names: true)
+    
+    items = response_body[:data]
+    expect(response).to be_successful
+    expect(items.count).to eq(0)
+  end
+
+  it 'sends an error with a bad id' do
+    merchants = create_list(:merchant, 2)
+    items = create_list(:item, 3)
+
+    get "/api/v1/merchants/a_bad_id"
+    expect(response.status).to eq(404)
   end
 end

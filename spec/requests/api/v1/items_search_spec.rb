@@ -44,15 +44,44 @@ RSpec.describe 'The items search API' do
       end
     end
 
-    context 'when the request is invalid' do
-      before { get "/api/v1/items/find?name=#{item_max_price}"}
+    context 'when the min/max price request is valid' do
+      before { get "/api/v1/items/find?max_price=#{item_max_price}&min_price=#{item_min_price}"}
 
-      it 'finds an item' do
+      it 'finds items' do
+        expect(json[:data].count > 0).to eq(true)
+        expect(json[:data][:type]).to eq("item")
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the search request is valid but empty' do
+      before { get "/api/v1/items/find?min_price=99999"}
+
+      it 'finds empty data' do
         expect(json[:data]).to eq({})
       end
 
       it 'returns status code 200' do
         expect(response).to have_http_status(200)
+      end
+    end
+
+    context 'when the param is blank' do
+      before { get "/api/v1/items/find?name="}
+
+      it 'returns status code 400' do
+        expect(response).to have_http_status(400)
+      end
+    end
+
+    context 'when there are multiple params' do
+      before { get "/api/v1/items/find?name=ill&max_price=100"}
+
+      it 'returns status code 400' do
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -97,6 +126,19 @@ RSpec.describe 'The items search API' do
       end
     end
 
+    context 'when the min/max price request is valid' do
+      before { get "/api/v1/items/find_all?max_price=#{item_max_price}&min_price=#{item_min_price}"}
+
+      it 'finds items' do
+        expect(json[:data].count > 0).to eq(true)
+        expect(json[:data].first[:type]).to eq("item")
+      end
+
+      it 'returns status code 200' do
+        expect(response).to have_http_status(200)
+      end
+    end
+
     context 'when the search request is valid but empty' do
       before { get "/api/v1/items/find_all?min_price=99999"}
 
@@ -109,15 +151,19 @@ RSpec.describe 'The items search API' do
       end
     end
 
-    context 'when the request is invalid' do
-      before { get "/api/v1/items/find_all?name=#{item_max_price}"}
+    context 'when the param is blank' do
+      before { get "/api/v1/items/find_all?name="}
 
-      it 'finds items' do
-        expect(json[:data][:type]).to eq("item")
+      it 'returns status code 400' do
+        expect(response).to have_http_status(400)
       end
+    end
 
-      it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+    context 'when there are multiple params' do
+      before { get "/api/v1/items/find_all?name=ill&max_price=100"}
+
+      it 'returns status code 400' do
+        expect(response).to have_http_status(400)
       end
     end
   end
